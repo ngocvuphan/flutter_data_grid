@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.13.5
-  data_grid:
+  vph_data_grid:
     path: ../
 
   cupertino_icons: ^1.0.2

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:data_grid/data_grid.dart';
+import 'package:vph_data_grid/vph_data_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -68,13 +68,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class _DataSource extends DataGridSource {
   final _sampleData = <List<String>>[];
-  // final _sampleData = <List<String>>[
-  //   <String>["AdoptAPet", "Resource to help get pets adopted", "apiKey", "true", "yes", "Animals", "https://www.adoptapet.com/public/apis/pet_list.html"],
-  //   <String>["Axolotl", "Collection of axolotl pictures and facts", "", "true", "no", "Animals", "https://theaxolotlapi.netlify.app/"],
-  //   <String>["Cat Facts", "Daily cat facts", "", "true", "no", "Animals", "https://alexwohlbruck.github.io/cat-facts/"],
-  //   <String>["Cataas", "Cat as a service (cats pictures and gifs)", "", "true", "no", "Animals", "https://cataas.com/"],
-  //   <String>["Cats", "Pictures of cats from Tumblr", "apiKey", "true", "no", "Animals", "https://docs.thecatapi.com/"],
-  // ];
 
   @override
   bool get isLoading => _isLoading;
@@ -85,6 +78,7 @@ class _DataSource extends DataGridSource {
   int _startIndex = 0;
   int _count = 0;
   List<Filter?>? _filters;
+  int Function(List<String>, List<String>)? _sortFunction;
 
   @override
   List<DataGridColumn> get columns {
@@ -174,17 +168,19 @@ class _DataSource extends DataGridSource {
     _isLoading = true;
     notifyListeners();
 
-    _localDataToRow(sort: (a, b) {
-      final compare = a[columnIndex].toLowerCase().compareTo(b[columnIndex].toLowerCase());
-      if (state == DataGridSortState.ascending) {
+    _sortColumnIndex = columnIndex;
+    _sortState = state;
+    _sortFunction = (a, b) {
+      final compare = a[_sortColumnIndex].toLowerCase().compareTo(b[_sortColumnIndex].toLowerCase());
+      if (_sortState == DataGridSortState.ascending) {
         return compare;
       } else {
         return -compare;
       }
-    });
+    };
 
-    _sortColumnIndex = columnIndex;
-    _sortState = state;
+    _localDataToRow();
+
     _isLoading = false;
     notifyListeners();
   }
@@ -200,6 +196,7 @@ class _DataSource extends DataGridSource {
   @override
   Future<void> applyFilters(List<Filter?> filters) async {
     _filters = filters;
+    _startIndex = 0;
     _localDataToRow();
     notifyListeners();
   }
@@ -245,7 +242,7 @@ class _DataSource extends DataGridSource {
     return results;
   }
 
-  void _localDataToRow({int Function(List<String>, List<String>)? sort}) {
+  void _localDataToRow() {
     Iterable<List<String>> data = _sampleData;
     if (_filters != null) {
       for (final filter in _filters!) {
@@ -262,8 +259,8 @@ class _DataSource extends DataGridSource {
       }
     }
 
-    if (sort != null) {
-      data = data.toList()..sort(sort);
+    if (_sortFunction != null) {
+      data = data.toList()..sort(_sortFunction);
     }
 
     _totalRowCount = data.length;
