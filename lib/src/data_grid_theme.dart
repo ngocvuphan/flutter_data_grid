@@ -11,12 +11,14 @@ class DataGridTheme extends InheritedWidget {
   final DataGridThemeData data;
 
   static DataGridThemeData of(BuildContext context) {
-    final DataGridTheme? dataGridTheme = context.dependOnInheritedWidgetOfExactType<DataGridTheme>();
+    final DataGridTheme? dataGridTheme =
+        context.dependOnInheritedWidgetOfExactType<DataGridTheme>();
     return dataGridTheme?.data ?? const DataGridThemeData();
   }
 
   @override
-  bool updateShouldNotify(covariant DataGridTheme oldWidget) => data != oldWidget.data;
+  bool updateShouldNotify(covariant DataGridTheme oldWidget) =>
+      data != oldWidget.data;
 }
 
 @immutable

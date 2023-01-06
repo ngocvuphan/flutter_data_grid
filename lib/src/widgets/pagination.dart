@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 
 const _kPageNumberIndicatorSize = 36.0;
 const _kPageNumberIndicatorMargin = 4.0;
-const _kPageNumberIndicatorExtendSize = (_kPageNumberIndicatorSize + _kPageNumberIndicatorMargin);
+const _kPageNumberIndicatorExtendSize =
+    (_kPageNumberIndicatorSize + _kPageNumberIndicatorMargin);
 const _kPageNumbersPerList = 5;
-const _kPageNumbersListMaxWidth = _kPageNumberIndicatorExtendSize * _kPageNumbersPerList;
+const _kPageNumbersListMaxWidth =
+    _kPageNumberIndicatorExtendSize * _kPageNumbersPerList;
 const _kPageControlIconSize = 20.0;
 const _kDisabledControlOpacity = 0.2;
 const _kItemSpacing = 16.0;
@@ -45,13 +47,15 @@ class _PaginationState extends State<Pagination> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _updateState(itemsPerPage: widget.itemsPerPage, currentPage: widget.initialPage);
+    _updateState(
+        itemsPerPage: widget.itemsPerPage, currentPage: widget.initialPage);
   }
 
   @override
   void didUpdateWidget(covariant Pagination oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.itemsPerPage != widget.itemsPerPage || oldWidget.totalItems != widget.totalItems) {
+    if (oldWidget.itemsPerPage != widget.itemsPerPage ||
+        oldWidget.totalItems != widget.totalItems) {
       _updateState(itemsPerPage: widget.itemsPerPage);
     }
   }
@@ -62,7 +66,8 @@ class _PaginationState extends State<Pagination> {
       _numberOfPages = (widget.totalItems / _itemsPerPage).ceil();
     }
 
-    _currentPage = math.min(currentPage ?? _currentPage, _numberOfPages > 0 ? _numberOfPages - 1 : 0);
+    _currentPage = math.min(currentPage ?? _currentPage,
+        _numberOfPages > 0 ? _numberOfPages - 1 : 0);
     _enableFirstPageCtrl = _currentPage != 0;
     _enableLastPageCtrl = _currentPage != _numberOfPages - 1;
   }
@@ -72,7 +77,8 @@ class _PaginationState extends State<Pagination> {
     if (pageIndex < 0) {
       pos = _scrollController.position.maxScrollExtent;
     } else if (pageIndex > 0) {
-      final midPos = ((_kPageNumbersPerList / 2).ceil()) * _kPageNumberIndicatorExtendSize;
+      final midPos =
+          ((_kPageNumbersPerList / 2).ceil()) * _kPageNumberIndicatorExtendSize;
       pos = pageIndex * _kPageNumberIndicatorExtendSize;
       if ((_scrollController.offset + _kPageNumbersListMaxWidth) <= pos) {
         pos = _scrollController.offset + midPos;
@@ -83,7 +89,8 @@ class _PaginationState extends State<Pagination> {
       }
     }
     if (pos != -1) {
-      _scrollController.animateTo(pos, duration: const Duration(milliseconds: 250), curve: Curves.linear);
+      _scrollController.animateTo(pos,
+          duration: const Duration(milliseconds: 250), curve: Curves.linear);
     }
   }
 
@@ -108,10 +115,13 @@ class _PaginationState extends State<Pagination> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    const margin = EdgeInsets.symmetric(horizontal: _kPageNumberIndicatorMargin / 2);
+    const margin =
+        EdgeInsets.symmetric(horizontal: _kPageNumberIndicatorMargin / 2);
 
-    final firstItemIndex = _numberOfPages > 0 ? _currentPage * _itemsPerPage + 1 : 0;
-    final lastItemIndex = math.min((_currentPage + 1) * _itemsPerPage, widget.totalItems);
+    final firstItemIndex =
+        _numberOfPages > 0 ? _currentPage * _itemsPerPage + 1 : 0;
+    final lastItemIndex =
+        math.min((_currentPage + 1) * _itemsPerPage, widget.totalItems);
 
     final children = <Widget>[];
 
@@ -133,7 +143,8 @@ class _PaginationState extends State<Pagination> {
                   child: Icon(
                     Icons.first_page,
                     size: _kPageControlIconSize,
-                    color: widget.textStyle?.color?.withOpacity(_enableFirstPageCtrl ? 1.0 : _kDisabledControlOpacity),
+                    color: widget.textStyle?.color?.withOpacity(
+                        _enableFirstPageCtrl ? 1.0 : _kDisabledControlOpacity),
                   ),
                 ),
               ),
@@ -152,12 +163,15 @@ class _PaginationState extends State<Pagination> {
             borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize),
             textStyle: widget.textStyle,
             child: InkWell(
-              onTap: _enableFirstPageCtrl ? () => _gotoPage(_currentPage - 1) : null,
+              onTap: _enableFirstPageCtrl
+                  ? () => _gotoPage(_currentPage - 1)
+                  : null,
               child: Center(
                 child: Icon(
                   Icons.keyboard_arrow_left,
                   size: _kPageControlIconSize,
-                  color: widget.textStyle?.color?.withOpacity(_enableFirstPageCtrl ? 1.0 : _kDisabledControlOpacity),
+                  color: widget.textStyle?.color?.withOpacity(
+                      _enableFirstPageCtrl ? 1.0 : _kDisabledControlOpacity),
                 ),
               ),
             ),
@@ -166,9 +180,11 @@ class _PaginationState extends State<Pagination> {
 
         /// Pages list
         ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: _kPageNumbersListMaxWidth),
+          constraints:
+              const BoxConstraints(maxWidth: _kPageNumbersListMaxWidth),
           child: ScrollConfiguration(
-            behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+            behavior:
+                ScrollConfiguration.of(context).copyWith(scrollbars: false),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               physics: const NeverScrollableScrollPhysics(),
@@ -182,16 +198,22 @@ class _PaginationState extends State<Pagination> {
                     height: _kPageNumberIndicatorSize,
                     margin: margin,
                     child: Material(
-                      color: _currentPage == index ? theme.colorScheme.primary : null,
+                      color: _currentPage == index
+                          ? theme.colorScheme.primary
+                          : null,
                       textStyle: widget.textStyle,
                       clipBehavior: Clip.antiAlias,
-                      borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize),
+                      borderRadius:
+                          BorderRadius.circular(_kPageNumberIndicatorSize),
                       child: InkWell(
                         onTap: () => _gotoPage(index),
                         child: Center(
                           child: Text(
                             "${index + 1}",
-                            style: TextStyle(color: _currentPage == index ? theme.colorScheme.onPrimary : null),
+                            style: TextStyle(
+                                color: _currentPage == index
+                                    ? theme.colorScheme.onPrimary
+                                    : null),
                           ),
                         ),
                       ),
@@ -214,12 +236,15 @@ class _PaginationState extends State<Pagination> {
             borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize),
             textStyle: widget.textStyle,
             child: InkWell(
-              onTap: _enableLastPageCtrl ? () => _gotoPage(_currentPage + 1) : null,
+              onTap: _enableLastPageCtrl
+                  ? () => _gotoPage(_currentPage + 1)
+                  : null,
               child: Center(
                 child: Icon(
                   Icons.keyboard_arrow_right,
                   size: _kPageControlIconSize,
-                  color: widget.textStyle?.color?.withOpacity(_enableLastPageCtrl ? 1.0 : _kDisabledControlOpacity),
+                  color: widget.textStyle?.color?.withOpacity(
+                      _enableLastPageCtrl ? 1.0 : _kDisabledControlOpacity),
                 ),
               ),
             ),
@@ -244,7 +269,8 @@ class _PaginationState extends State<Pagination> {
                   child: Icon(
                     Icons.last_page,
                     size: _kPageControlIconSize,
-                    color: widget.textStyle?.color?.withOpacity(_enableLastPageCtrl ? 1.0 : _kDisabledControlOpacity),
+                    color: widget.textStyle?.color?.withOpacity(
+                        _enableLastPageCtrl ? 1.0 : _kDisabledControlOpacity),
                   ),
                 ),
               ),
@@ -260,7 +286,8 @@ class _PaginationState extends State<Pagination> {
 
     children.addAll([
       /// Text
-      Text("$firstItemIndex - $lastItemIndex of ${widget.totalItems}", style: widget.textStyle),
+      Text("$firstItemIndex - $lastItemIndex of ${widget.totalItems}",
+          style: widget.textStyle),
       const Spacer(),
 
       /// Dropdown

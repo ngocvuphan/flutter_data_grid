@@ -20,16 +20,20 @@ class _SortIconState extends State<SortIcon> with TickerProviderStateMixin {
   late Animation<double> _orientationAnimation;
   double _orientationOffset = 0.0;
 
-  static final Animatable<double> _turnTween = Tween<double>(begin: 0.0, end: math.pi).chain(CurveTween(curve: Curves.easeIn));
+  static final Animatable<double> _turnTween =
+      Tween<double>(begin: 0.0, end: math.pi)
+          .chain(CurveTween(curve: Curves.easeIn));
 
   @override
   void initState() {
     super.initState();
-    _orientationController = AnimationController(duration: kSortIconAnimationDuration, vsync: this);
+    _orientationController =
+        AnimationController(duration: kSortIconAnimationDuration, vsync: this);
     _orientationAnimation = _orientationController.drive(_turnTween)
       ..addListener(_rebuild)
       ..addStatusListener(_resetOrientationAnimation);
-    _orientationOffset = widget.state == DataGridSortState.ascending ? 0.0 : math.pi;
+    _orientationOffset =
+        widget.state == DataGridSortState.ascending ? 0.0 : math.pi;
   }
 
   @override
@@ -53,7 +57,8 @@ class _SortIconState extends State<SortIcon> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Transform(
-      transform: Matrix4.rotationZ(_orientationOffset + _orientationAnimation.value),
+      transform:
+          Matrix4.rotationZ(_orientationOffset + _orientationAnimation.value),
       alignment: Alignment.center,
       child: const Icon(Icons.south, size: 16),
     );

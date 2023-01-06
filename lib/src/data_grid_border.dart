@@ -21,22 +21,39 @@ class DataGridBorder {
     this.verticalInside = BorderSide.none,
   });
 
-  factory DataGridBorder.withStyle({required DataGridBorderStyle style, required BorderSide borderSide}) {
+  factory DataGridBorder.withStyle(
+      {required DataGridBorderStyle style, required BorderSide borderSide}) {
     switch (style) {
       case DataGridBorderStyle.none:
         return const DataGridBorder();
       case DataGridBorderStyle.all:
-        return DataGridBorder(top: borderSide, right: borderSide, bottom: borderSide, left: borderSide, horizontalInside: borderSide, verticalInside: borderSide);
+        return DataGridBorder(
+            top: borderSide,
+            right: borderSide,
+            bottom: borderSide,
+            left: borderSide,
+            horizontalInside: borderSide,
+            verticalInside: borderSide);
       case DataGridBorderStyle.outside:
-        return DataGridBorder(top: borderSide, right: borderSide, bottom: borderSide, left: borderSide);
+        return DataGridBorder(
+            top: borderSide,
+            right: borderSide,
+            bottom: borderSide,
+            left: borderSide);
       case DataGridBorderStyle.inside:
-        return DataGridBorder(horizontalInside: borderSide, verticalInside: borderSide);
+        return DataGridBorder(
+            horizontalInside: borderSide, verticalInside: borderSide);
       case DataGridBorderStyle.horizontal:
         return DataGridBorder(horizontalInside: borderSide);
       case DataGridBorderStyle.vertical:
         return DataGridBorder(verticalInside: borderSide);
       case DataGridBorderStyle.outsideAndHorizontal:
-        return DataGridBorder(top: borderSide, right: borderSide, bottom: borderSide, left: borderSide, horizontalInside: borderSide);
+        return DataGridBorder(
+            top: borderSide,
+            right: borderSide,
+            bottom: borderSide,
+            left: borderSide,
+            horizontalInside: borderSide);
     }
   }
 

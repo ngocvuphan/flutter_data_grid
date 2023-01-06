@@ -21,7 +21,8 @@ class GridContainer extends MultiChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, covariant RenderObject renderObject) {
+  void updateRenderObject(
+      BuildContext context, covariant RenderObject renderObject) {
     (renderObject as RenderGridContainer).border = border;
   }
 }

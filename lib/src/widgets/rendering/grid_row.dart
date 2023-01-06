@@ -8,7 +8,9 @@ import '../grid_row.dart';
 
 class GridRowParentData extends ContainerBoxParentData<RenderBox> {}
 
-class RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, GridRowParentData> implements MouseTrackerAnnotation {
+class RenderGridRow extends RenderBox
+    with ContainerRenderObjectMixin<RenderBox, GridRowParentData>
+    implements MouseTrackerAnnotation {
   RenderGridRow({
     required GridRowType type,
     required GridStateManager stateManager,
@@ -167,7 +169,9 @@ class RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox,
     if (_type == GridRowType.footer) {
       assert(childCount == 1);
       _columnRightRects = [];
-      firstChild?.layout(BoxConstraints.tightFor(width: _stateManager.gridWidth), parentUsesSize: true);
+      firstChild?.layout(
+          BoxConstraints.tightFor(width: _stateManager.gridWidth),
+          parentUsesSize: true);
       size = firstChild?.size ?? Size.zero;
     } else {
       double width = 0, height = 0;
@@ -177,9 +181,11 @@ class RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox,
         final childParentData = child.parentData as GridRowParentData;
         double childWidth = stateManager.getColumnWidth(index + _skipColumns);
         if (childWidth > 0) {
-          child.layout(BoxConstraints.tightFor(width: childWidth), parentUsesSize: true);
+          child.layout(BoxConstraints.tightFor(width: childWidth),
+              parentUsesSize: true);
         } else {
-          child.layout(BoxConstraints(maxHeight: constraints.maxHeight), parentUsesSize: true);
+          child.layout(BoxConstraints(maxHeight: constraints.maxHeight),
+              parentUsesSize: true);
         }
         childParentData.offset = Offset(width, 0);
         width += child.size.width;
@@ -194,7 +200,11 @@ class RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox,
       while (child != null) {
         final childParentData = child.parentData as GridRowParentData;
         final right = childParentData.offset.dx + child.size.width;
-        _columnRightRects[index] = Rect.fromLTRB(right - kColumnRightRectWidth / 2, 0, right + kColumnRightRectWidth / 2, height);
+        _columnRightRects[index] = Rect.fromLTRB(
+            right - kColumnRightRectWidth / 2,
+            0,
+            right + kColumnRightRectWidth / 2,
+            height);
         index++;
         child = childParentData.nextSibling;
       }
@@ -250,7 +260,8 @@ class RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox,
     _resizingColumn = -1;
     if (type == GridRowType.header) {
       for (int x = 0; x < _columnRightRects.length; x++) {
-        if (_stateManager.columnResizable(x + _skipColumns) && _columnRightRects[x]!.contains(position)) {
+        if (_stateManager.columnResizable(x + _skipColumns) &&
+            _columnRightRects[x]!.contains(position)) {
           _resizingColumn = x;
           return true;
         }
@@ -264,18 +275,25 @@ class RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox,
     if (validForMouseTracker) {
       if (event is PointerDownEvent) {
         if (!_isHitChildrent) {
-          _stateManager.onPointerDown(event, GridStateEventArg(resizingColumn: _resizingColumn + _skipColumns));
+          _stateManager.onPointerDown(
+              event,
+              GridStateEventArg(
+                  resizingColumn: _resizingColumn + _skipColumns));
         }
       } else if (event is PointerMoveEvent) {
-        _stateManager.onPointerMove(event, GridStateEventArg(resizingColumn: _resizingColumn + _skipColumns));
+        _stateManager.onPointerMove(event,
+            GridStateEventArg(resizingColumn: _resizingColumn + _skipColumns));
       } else if (event is PointerUpEvent) {
-        _stateManager.onPointerUp(event, GridStateEventArg(resizingColumn: _resizingColumn + _skipColumns));
+        _stateManager.onPointerUp(event,
+            GridStateEventArg(resizingColumn: _resizingColumn + _skipColumns));
       }
     }
   }
 
   @override
-  MouseCursor get cursor => validForMouseTracker ? SystemMouseCursors.resizeColumn : SystemMouseCursors.basic;
+  MouseCursor get cursor => validForMouseTracker
+      ? SystemMouseCursors.resizeColumn
+      : SystemMouseCursors.basic;
 
   @override
   PointerEnterEventListener? get onEnter => _handlePointerEntered;
@@ -338,14 +356,18 @@ class RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox,
     bool withIndicator = false;
     path.reset();
     for (int x = 0; x < _columnRightRects.length; x++) {
-      if (border != null && border!.verticalInside.style == BorderStyle.none && _type == GridRowType.header && _stateManager.columnResizable(x + _skipColumns)) {
+      if (border != null &&
+          border!.verticalInside.style == BorderStyle.none &&
+          _type == GridRowType.header &&
+          _stateManager.columnResizable(x + _skipColumns)) {
         withIndicator = true;
         paint
           ..color = _columnEdgeIndicatorColor
           ..strokeWidth = _columnEdgeIndicatorWidth;
         final topCenter = offset + _columnRightRects[x]!.topCenter;
         path.moveTo(topCenter.dx, topCenter.dy + _columnEdgeIndicatorIndent);
-        path.lineTo(topCenter.dx, topCenter.dy + size.height - _columnEdgeIndicatorIndent);
+        path.lineTo(topCenter.dx,
+            topCenter.dy + size.height - _columnEdgeIndicatorIndent);
       }
     }
     if (withIndicator) {
@@ -370,7 +392,8 @@ class RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox,
         break;
       case GridState.columnResizeStart:
         _resizingColumn = _stateManager.resizingColumn - _skipColumns;
-        _isColumnResizing = 0 <= _resizingColumn && _resizingColumn < childCount;
+        _isColumnResizing =
+            0 <= _resizingColumn && _resizingColumn < childCount;
         if (!_isColumnResizing) {
           _resizingColumn = -1;
         }

@@ -14,7 +14,8 @@ class GridRowsContainer extends MultiChildRenderObjectWidget {
   final GridStateManager? stateManager;
 
   @override
-  MultiChildRenderObjectElement createElement() => _ElementGridRowsContainer(this);
+  MultiChildRenderObjectElement createElement() =>
+      _ElementGridRowsContainer(this);
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -22,7 +23,8 @@ class GridRowsContainer extends MultiChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, covariant RenderObject renderObject) {
+  void updateRenderObject(
+      BuildContext context, covariant RenderObject renderObject) {
     (renderObject as RenderGridRowsContainer).stateManager = stateManager;
   }
 }

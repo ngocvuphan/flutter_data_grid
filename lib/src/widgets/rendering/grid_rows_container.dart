@@ -6,7 +6,8 @@ import 'grid_row.dart';
 
 class _GridRowParentData extends ContainerBoxParentData<RenderGridRow> {}
 
-class RenderGridRowsContainer extends RenderBox with ContainerRenderObjectMixin<RenderGridRow, _GridRowParentData> {
+class RenderGridRowsContainer extends RenderBox
+    with ContainerRenderObjectMixin<RenderGridRow, _GridRowParentData> {
   RenderGridRowsContainer({
     bool isDirty = true,
     GridStateManager? stateManager,

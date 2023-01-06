@@ -9,7 +9,8 @@ class GridContainerParentData extends ContainerBoxParentData<RenderBox> {
   DataGridBorder? border;
 }
 
-class RenderGridContainer extends RenderBox with ContainerRenderObjectMixin<RenderBox, GridContainerParentData> {
+class RenderGridContainer extends RenderBox
+    with ContainerRenderObjectMixin<RenderBox, GridContainerParentData> {
   RenderGridContainer({
     DataGridBorder? border,
   }) : _border = border;
@@ -34,8 +35,17 @@ class RenderGridContainer extends RenderBox with ContainerRenderObjectMixin<Rend
   @override
   void performLayout() {
     assert(childCount < 6);
-    double headerWidth = 0, headerHeight = 0, bodyWidth = 0, bodyHeight = 0, footerWidth = 0, footerHeight = 0;
-    RenderBox? freezeHeaderChild, headerChild, freezeBodyChild, bodyChild, footerChild;
+    double headerWidth = 0,
+        headerHeight = 0,
+        bodyWidth = 0,
+        bodyHeight = 0,
+        footerWidth = 0,
+        footerHeight = 0;
+    RenderBox? freezeHeaderChild,
+        headerChild,
+        freezeBodyChild,
+        bodyChild,
+        footerChild;
     RenderBox? child = firstChild;
     while (child != null) {
       final childParentData = child.parentData as GridContainerParentData;
@@ -61,45 +71,73 @@ class RenderGridContainer extends RenderBox with ContainerRenderObjectMixin<Rend
 
     /// freezeHeader
     if (freezeHeaderChild != null) {
-      freezeHeaderChild.layout(BoxConstraints(maxWidth: constraints.maxWidth, maxHeight: constraints.maxHeight), parentUsesSize: true);
-      (freezeHeaderChild.parentData as GridContainerParentData).offset = const Offset(0, 0);
+      freezeHeaderChild.layout(
+          BoxConstraints(
+              maxWidth: constraints.maxWidth, maxHeight: constraints.maxHeight),
+          parentUsesSize: true);
+      (freezeHeaderChild.parentData as GridContainerParentData).offset =
+          const Offset(0, 0);
       headerWidth = freezeHeaderChild.size.width;
       headerHeight = freezeHeaderChild.size.height;
     }
 
     /// header
     if (headerChild != null) {
-      headerChild.layout(BoxConstraints(maxWidth: constraints.maxWidth - headerWidth, maxHeight: constraints.maxHeight), parentUsesSize: true);
-      (headerChild.parentData as GridContainerParentData).offset = Offset(headerWidth, 0);
+      headerChild.layout(
+          BoxConstraints(
+              maxWidth: constraints.maxWidth - headerWidth,
+              maxHeight: constraints.maxHeight),
+          parentUsesSize: true);
+      (headerChild.parentData as GridContainerParentData).offset =
+          Offset(headerWidth, 0);
       headerWidth += headerChild.size.width;
       headerHeight = math.max(headerHeight, headerChild.size.height);
     }
     // footer
     if (footerChild != null) {
-      footerChild.layout(BoxConstraints(maxWidth: constraints.maxWidth, maxHeight: constraints.maxHeight - headerHeight), parentUsesSize: true);
+      footerChild.layout(
+          BoxConstraints(
+              maxWidth: constraints.maxWidth,
+              maxHeight: constraints.maxHeight - headerHeight),
+          parentUsesSize: true);
       footerWidth = footerChild.size.width;
       footerHeight = footerChild.size.height;
     }
     // freezeBody
     if (freezeBodyChild != null) {
-      freezeBodyChild.layout(BoxConstraints(maxWidth: constraints.maxWidth, maxHeight: constraints.maxHeight - headerHeight - footerHeight), parentUsesSize: true);
-      (freezeBodyChild.parentData as GridContainerParentData).offset = Offset(0, headerHeight);
+      freezeBodyChild.layout(
+          BoxConstraints(
+              maxWidth: constraints.maxWidth,
+              maxHeight: constraints.maxHeight - headerHeight - footerHeight),
+          parentUsesSize: true);
+      (freezeBodyChild.parentData as GridContainerParentData).offset =
+          Offset(0, headerHeight);
       bodyWidth = freezeBodyChild.size.width;
       bodyHeight = freezeBodyChild.size.height;
     }
     // body
     if (bodyChild != null) {
-      bodyChild.layout(BoxConstraints(maxWidth: constraints.maxWidth - bodyWidth, maxHeight: constraints.maxHeight - headerHeight - footerHeight), parentUsesSize: true);
-      (bodyChild.parentData as GridContainerParentData).offset = Offset(bodyWidth, headerHeight);
+      bodyChild.layout(
+          BoxConstraints(
+              maxWidth: constraints.maxWidth - bodyWidth,
+              maxHeight: constraints.maxHeight - headerHeight - footerHeight),
+          parentUsesSize: true);
+      (bodyChild.parentData as GridContainerParentData).offset =
+          Offset(bodyWidth, headerHeight);
       bodyWidth += bodyChild.size.width;
       bodyHeight = math.max(bodyHeight, bodyChild.size.height);
     }
     // bottom offset
     if (footerChild != null) {
-      (footerChild.parentData as GridContainerParentData).offset = Offset(0, math.max(headerHeight + bodyHeight, constraints.minHeight - footerHeight));
+      (footerChild.parentData as GridContainerParentData).offset = Offset(
+          0,
+          math.max(
+              headerHeight + bodyHeight, constraints.minHeight - footerHeight));
     }
     // Size
-    size = constraints.constrainDimensions(math.max(math.max(headerWidth, bodyWidth), footerWidth), headerHeight + bodyHeight + footerHeight);
+    size = constraints.constrainDimensions(
+        math.max(math.max(headerWidth, bodyWidth), footerWidth),
+        headerHeight + bodyHeight + footerHeight);
   }
 
   @override
@@ -213,7 +251,8 @@ class RenderGridContainer extends RenderBox with ContainerRenderObjectMixin<Rend
     while (child != null) {
       final childParentData = child.parentData as GridContainerParentData;
       if (childParentData.border != null) {
-        _paintBorder(childParentData.border!, canvas, (offset + childParentData.offset) & child.size);
+        _paintBorder(childParentData.border!, canvas,
+            (offset + childParentData.offset) & child.size);
       }
       child = childParentData.nextSibling;
     }

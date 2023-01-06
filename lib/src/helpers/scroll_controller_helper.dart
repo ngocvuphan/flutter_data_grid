@@ -14,7 +14,8 @@ class ScrollControllerHelper {
   late LinkedScrollControllerGroup _horizontalControllers;
   late LinkedScrollControllerGroup _verticalControllers;
 
-  ScrollController? get horizontalHeaderController => _horizontalHeaderController;
+  ScrollController? get horizontalHeaderController =>
+      _horizontalHeaderController;
   ScrollController? _horizontalHeaderController;
 
   ScrollController? get horizontalRowsController => _horizontalRowsController;

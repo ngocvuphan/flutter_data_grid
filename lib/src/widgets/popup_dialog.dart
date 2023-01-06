@@ -25,19 +25,25 @@ class PopupDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return withoutRipple ? GestureDetector(onTap: () => _handleTap(context), child: child) : InkWell(onTap: () => _handleTap(context), child: child);
+    return withoutRipple
+        ? GestureDetector(onTap: () => _handleTap(context), child: child)
+        : InkWell(onTap: () => _handleTap(context), child: child);
   }
 
   void _handleTap(BuildContext context) {
-    final NavigatorState navigator = Navigator.of(context, rootNavigator: false);
+    final NavigatorState navigator =
+        Navigator.of(context, rootNavigator: false);
     final RenderBox renderBox = context.findRenderObject()! as RenderBox;
-    final RenderBox overlayRenderBox = navigator.overlay!.context.findRenderObject()! as RenderBox;
+    final RenderBox overlayRenderBox =
+        navigator.overlay!.context.findRenderObject()! as RenderBox;
     const offset = Offset.zero;
 
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
         renderBox.localToGlobal(offset, ancestor: overlayRenderBox),
-        renderBox.localToGlobal(renderBox.size.bottomRight(Offset.zero) + offset, ancestor: overlayRenderBox),
+        renderBox.localToGlobal(
+            renderBox.size.bottomRight(Offset.zero) + offset,
+            ancestor: overlayRenderBox),
       ),
       Offset.zero & overlayRenderBox.size,
     );
@@ -45,7 +51,8 @@ class PopupDialog extends StatelessWidget {
     navigator
         .push(_PopupDialogRoute(
           position: position,
-          capturedThemes: InheritedTheme.capture(from: context, to: navigator.context),
+          capturedThemes:
+              InheritedTheme.capture(from: context, to: navigator.context),
           child: dialogBuilder(context),
         ))
         .then(onDismiss ?? (value) {});
@@ -85,7 +92,8 @@ class _PopupDialogRoute extends PopupRoute {
   }
 
   @override
-  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
     final MediaQueryData mediaQuery = MediaQuery.of(context);
     final dialog = _Dialog(animation: animation, child: child);
     return CustomSingleChildLayout(
@@ -113,7 +121,8 @@ class _PopupDialogLayoutDelegate extends SingleChildLayoutDelegate {
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    return BoxConstraints.loose(constraints.biggest).deflate(const EdgeInsets.all(_kPopupScreenPadding));
+    return BoxConstraints.loose(constraints.biggest)
+        .deflate(const EdgeInsets.all(_kPopupScreenPadding));
   }
 
   @override
@@ -132,20 +141,24 @@ class _PopupDialogLayoutDelegate extends SingleChildLayoutDelegate {
     }
     final Offset wantedPosition = Offset(x, y);
     final Offset originCenter = position.toRect(Offset.zero & size).center;
-    final Iterable<Rect> subScreens = DisplayFeatureSubScreen.subScreensInBounds(Offset.zero & size, avoidBounds);
+    final Iterable<Rect> subScreens =
+        DisplayFeatureSubScreen.subScreensInBounds(
+            Offset.zero & size, avoidBounds);
     final Rect subScreen = _closestScreen(subScreens, originCenter);
     return _fitInsideScreen(subScreen, childSize, wantedPosition);
   }
 
   @override
   bool shouldRelayout(covariant _PopupDialogLayoutDelegate oldDelegate) {
-    return position != oldDelegate.position || !setEquals(avoidBounds, oldDelegate.avoidBounds);
+    return position != oldDelegate.position ||
+        !setEquals(avoidBounds, oldDelegate.avoidBounds);
   }
 
   Rect _closestScreen(Iterable<Rect> screens, Offset point) {
     Rect closest = screens.first;
     for (final Rect screen in screens) {
-      if ((screen.center - point).distance < (closest.center - point).distance) {
+      if ((screen.center - point).distance <
+          (closest.center - point).distance) {
         closest = screen;
       }
     }
@@ -184,11 +197,13 @@ class _Dialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dialog = ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: _kMaxPopupWidth, minWidth: _kMinPopupWidth),
+      constraints: const BoxConstraints(
+          maxWidth: _kMaxPopupWidth, minWidth: _kMinPopupWidth),
       child: SingleChildScrollView(child: child),
     );
 
-    final CurveTween opacity = CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
+    final CurveTween opacity =
+        CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
     final CurveTween width = CurveTween(curve: const Interval(0.0, 1.0 / 2.5));
     final CurveTween height = CurveTween(curve: const Interval(0.0, 1.0 / 2.5));
 
