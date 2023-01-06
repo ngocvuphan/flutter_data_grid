@@ -1,0 +1,20 @@
+name: vph_data_grid
+description: Flutter DataGrid package.
+version: 0.0.1
+homepage: https://github.com/ngocvuphan/flutter_data_grid
+
+environment:
+  sdk: '>=2.18.4 <3.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  linked_scroll_controller: ^0.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
