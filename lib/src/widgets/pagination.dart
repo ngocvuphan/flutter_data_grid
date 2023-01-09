@@ -169,7 +169,7 @@ class _PaginationState extends State<Pagination> {
 
           /// Pages Number indicators list
           Container(
-            constraints: BoxConstraints(maxWidth: pageNumberIndicatorsPerList * _kPageNumberIndicatorExtendSize),
+            constraints: const BoxConstraints(maxWidth: pageNumberIndicatorsPerList * _kPageNumberIndicatorExtendSize),
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize)),
             clipBehavior: Clip.antiAlias,
             child: ScrollConfiguration(
