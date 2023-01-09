@@ -7,6 +7,7 @@
 * Column sorting
 * Column filtering
 * Localization
+
     Register new Localization class which extends DataGridLocalizations in your main():
     ```dart
     void main() {
