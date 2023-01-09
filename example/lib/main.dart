@@ -1,67 +1,105 @@
 import 'dart:convert';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:vph_data_grid/vph_data_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'data_grid_localizations_vi.dart';
+
 void main() {
+  DataGridLocalizations.registerLocalization(DataGridLocalizationsVi());
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DataGrid Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const MyHomePage(title: 'Flutter DataGrid Demo Page'),
-    );
-  }
+  State<MyApp> createState() => _MyAppState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _MyAppState extends State<MyApp> {
+  final List<Locale> _supportedLocales = const [
+    Locale('en'),
+    Locale('vi'),
+  ];
+  late Locale _selectedLocale;
   late _DataSource _dataSource;
 
   @override
   void initState() {
     super.initState();
 
+    _selectedLocale = _supportedLocales[0];
     _dataSource = _DataSource();
     _dataSource.fetch(startIndex: 0, count: 10);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: DataGridTheme(
-        data: const DataGridThemeData(),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: DataGrid(
-                  borderStyle: DataGridBorderStyle.all,
-                  //freezeColumns: 1,
-                  source: _dataSource,
-                ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blue),
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        DataGridLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: _supportedLocales,
+      locale: _selectedLocale,
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+      home: Builder(builder: (context) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)!.appTitle),
+            actions: [
+              PopupMenuButton<Locale>(
+                initialValue: _selectedLocale,
+                onSelected: (value) {
+                  if (value != _selectedLocale) {
+                    setState(() {
+                      _selectedLocale = value;
+                    });
+                  }
+                },
+                itemBuilder: (context) {
+                  return const [
+                    PopupMenuItem(
+                      value: Locale("en"),
+                      child: ListTile(leading: Text("🇺🇸", style: TextStyle(fontSize: 28)), title: Text("English")),
+                    ),
+                    PopupMenuItem(
+                      value: Locale("vi"),
+                      child: ListTile(leading: Text("🇻🇳", style: TextStyle(fontSize: 28)), title: Text("Tiếng Việt")),
+                    ),
+                  ];
+                },
+                icon: const Icon(Icons.language),
               ),
             ],
           ),
-        ),
-      ),
+          body: DataGridTheme(
+            data: const DataGridThemeData(),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: DataGrid(
+                      borderStyle: DataGridBorderStyle.all,
+                      //freezeColumns: 1,
+                      source: _dataSource,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 }
@@ -71,7 +109,6 @@ class _DataSource extends DataGridSource {
 
   @override
   bool get isLoading => _isLoading;
-  // ignore: prefer_final_fields
   bool _isLoading = true;
 
   List<DataGridRow>? _rows;
@@ -85,6 +122,7 @@ class _DataSource extends DataGridSource {
     return const [
       DataGridColumn(
         name: "API",
+        displayName: "API",
         columnWidth: FixedDataGridColumnWidth(120),
         resizable: true,
         filterable: true,

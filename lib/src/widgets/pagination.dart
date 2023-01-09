@@ -1,16 +1,14 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
+import '../data_grid_localizations.dart';
+
 const _kPageNumberIndicatorSize = 36.0;
 const _kPageNumberIndicatorMargin = 4.0;
-const _kPageNumberIndicatorExtendSize =
-    (_kPageNumberIndicatorSize + _kPageNumberIndicatorMargin);
-const _kPageNumbersPerList = 5;
-const _kPageNumbersListMaxWidth =
-    _kPageNumberIndicatorExtendSize * _kPageNumbersPerList;
+const _kPageNumberIndicatorExtendSize = (_kPageNumberIndicatorSize + _kPageNumberIndicatorMargin);
 const _kPageControlIconSize = 20.0;
 const _kDisabledControlOpacity = 0.2;
-const _kItemSpacing = 16.0;
+const _kMaxWidthThreshold = 560.0;
 
 class Pagination extends StatefulWidget {
   const Pagination({
@@ -47,15 +45,13 @@ class _PaginationState extends State<Pagination> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _updateState(
-        itemsPerPage: widget.itemsPerPage, currentPage: widget.initialPage);
+    _updateState(itemsPerPage: widget.itemsPerPage, currentPage: widget.initialPage);
   }
 
   @override
   void didUpdateWidget(covariant Pagination oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.itemsPerPage != widget.itemsPerPage ||
-        oldWidget.totalItems != widget.totalItems) {
+    if (oldWidget.itemsPerPage != widget.itemsPerPage || oldWidget.totalItems != widget.totalItems) {
       _updateState(itemsPerPage: widget.itemsPerPage);
     }
   }
@@ -66,21 +62,19 @@ class _PaginationState extends State<Pagination> {
       _numberOfPages = (widget.totalItems / _itemsPerPage).ceil();
     }
 
-    _currentPage = math.min(currentPage ?? _currentPage,
-        _numberOfPages > 0 ? _numberOfPages - 1 : 0);
+    _currentPage = math.min(currentPage ?? _currentPage, _numberOfPages > 0 ? _numberOfPages - 1 : 0);
     _enableFirstPageCtrl = _currentPage != 0;
     _enableLastPageCtrl = _currentPage != _numberOfPages - 1;
   }
 
-  Future<void> _scrollTo(int pageIndex) async {
+  Future<void> _scrollTo(int pageIndex, int indicatorsPerList) async {
     double pos = 0;
     if (pageIndex < 0) {
       pos = _scrollController.position.maxScrollExtent;
     } else if (pageIndex > 0) {
-      final midPos =
-          ((_kPageNumbersPerList / 2).ceil()) * _kPageNumberIndicatorExtendSize;
+      final midPos = ((indicatorsPerList / 2).ceil()) * _kPageNumberIndicatorExtendSize;
       pos = pageIndex * _kPageNumberIndicatorExtendSize;
-      if ((_scrollController.offset + _kPageNumbersListMaxWidth) <= pos) {
+      if ((_scrollController.offset + indicatorsPerList * _kPageNumberIndicatorExtendSize) <= pos) {
         pos = _scrollController.offset + midPos;
       } else if (pos < _scrollController.offset) {
         pos = _scrollController.offset - midPos;
@@ -89,13 +83,12 @@ class _PaginationState extends State<Pagination> {
       }
     }
     if (pos != -1) {
-      _scrollController.animateTo(pos,
-          duration: const Duration(milliseconds: 250), curve: Curves.linear);
+      _scrollController.animateTo(pos, duration: const Duration(milliseconds: 250), curve: Curves.linear);
     }
   }
 
-  void _gotoPage(int index) {
-    _scrollTo(index);
+  void _gotoPage(int index, int indicatorsPerList) {
+    _scrollTo(index, indicatorsPerList);
     if (index == -1) {
       index = _numberOfPages - 1;
     }
@@ -114,21 +107,45 @@ class _PaginationState extends State<Pagination> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    const margin =
-        EdgeInsets.symmetric(horizontal: _kPageNumberIndicatorMargin / 2);
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+      final theme = Theme.of(context);
+      final localization = DataGridLocalizations.of(context);
+      const margin = EdgeInsets.symmetric(horizontal: _kPageNumberIndicatorMargin / 2);
 
-    final firstItemIndex =
-        _numberOfPages > 0 ? _currentPage * _itemsPerPage + 1 : 0;
-    final lastItemIndex =
-        math.min((_currentPage + 1) * _itemsPerPage, widget.totalItems);
+      final firstItem = _numberOfPages > 0 ? _currentPage * _itemsPerPage + 1 : 0;
+      final lastItem = math.min((_currentPage + 1) * _itemsPerPage, widget.totalItems);
 
-    final children = <Widget>[];
+      final isCollapsed = constraints.maxWidth < _kMaxWidthThreshold;
+      const pageNumberIndicatorsPerList = 5;
 
-    if (_numberOfPages > 1) {
-      /// Goto First page
-      if (_numberOfPages > _kPageNumbersPerList) {
-        children.add(
+      final itemsInfoTitle = _parseItemsInfoTitle(localization.paginationItemsInfoTitle, firstItem, lastItem, widget.totalItems);
+
+      return Row(
+        children: [
+          /// Goto First page
+          if (_numberOfPages > pageNumberIndicatorsPerList)
+            Container(
+              width: _kPageNumberIndicatorSize,
+              height: _kPageNumberIndicatorSize,
+              margin: margin,
+              child: Material(
+                clipBehavior: Clip.antiAlias,
+                borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize),
+                textStyle: widget.textStyle,
+                child: InkWell(
+                  onTap: _enableFirstPageCtrl ? () => _gotoPage(0, pageNumberIndicatorsPerList) : null,
+                  child: Center(
+                    child: Icon(
+                      Icons.first_page,
+                      size: _kPageControlIconSize,
+                      color: widget.textStyle?.color?.withOpacity(_enableFirstPageCtrl ? 1.0 : _kDisabledControlOpacity),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+          /// Goto previous page
           Container(
             width: _kPageNumberIndicatorSize,
             height: _kPageNumberIndicatorSize,
@@ -138,123 +155,61 @@ class _PaginationState extends State<Pagination> {
               borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize),
               textStyle: widget.textStyle,
               child: InkWell(
-                onTap: _enableFirstPageCtrl ? () => _gotoPage(0) : null,
+                onTap: _enableFirstPageCtrl ? () => _gotoPage(_currentPage - 1, pageNumberIndicatorsPerList) : null,
                 child: Center(
                   child: Icon(
-                    Icons.first_page,
+                    Icons.keyboard_arrow_left,
                     size: _kPageControlIconSize,
-                    color: widget.textStyle?.color?.withOpacity(
-                        _enableFirstPageCtrl ? 1.0 : _kDisabledControlOpacity),
+                    color: widget.textStyle?.color?.withOpacity(_enableFirstPageCtrl ? 1.0 : _kDisabledControlOpacity),
                   ),
                 ),
               ),
             ),
           ),
-        );
-      }
-      children.addAll([
-        /// Goto previous page
-        Container(
-          width: _kPageNumberIndicatorSize,
-          height: _kPageNumberIndicatorSize,
-          margin: margin,
-          child: Material(
-            clipBehavior: Clip.antiAlias,
-            borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize),
-            textStyle: widget.textStyle,
-            child: InkWell(
-              onTap: _enableFirstPageCtrl
-                  ? () => _gotoPage(_currentPage - 1)
-                  : null,
-              child: Center(
-                child: Icon(
-                  Icons.keyboard_arrow_left,
-                  size: _kPageControlIconSize,
-                  color: widget.textStyle?.color?.withOpacity(
-                      _enableFirstPageCtrl ? 1.0 : _kDisabledControlOpacity),
-                ),
-              ),
-            ),
-          ),
-        ),
 
-        /// Pages list
-        ConstrainedBox(
-          constraints:
-              const BoxConstraints(maxWidth: _kPageNumbersListMaxWidth),
-          child: ScrollConfiguration(
-            behavior:
-                ScrollConfiguration.of(context).copyWith(scrollbars: false),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              physics: const NeverScrollableScrollPhysics(),
-              controller: _scrollController,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(
-                  _numberOfPages,
-                  (index) => Container(
-                    width: _kPageNumberIndicatorSize,
-                    height: _kPageNumberIndicatorSize,
-                    margin: margin,
-                    child: Material(
-                      color: _currentPage == index
-                          ? theme.colorScheme.primary
-                          : null,
-                      textStyle: widget.textStyle,
-                      clipBehavior: Clip.antiAlias,
-                      borderRadius:
-                          BorderRadius.circular(_kPageNumberIndicatorSize),
-                      child: InkWell(
-                        onTap: () => _gotoPage(index),
-                        child: Center(
-                          child: Text(
-                            "${index + 1}",
-                            style: TextStyle(
-                                color: _currentPage == index
-                                    ? theme.colorScheme.onPrimary
-                                    : null),
+          /// Pages Number indicators list
+          Container(
+            constraints: BoxConstraints(maxWidth: pageNumberIndicatorsPerList * _kPageNumberIndicatorExtendSize),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize)),
+            clipBehavior: Clip.antiAlias,
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: const NeverScrollableScrollPhysics(),
+                controller: _scrollController,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(
+                    _numberOfPages,
+                    (index) => Container(
+                      width: _kPageNumberIndicatorSize,
+                      height: _kPageNumberIndicatorSize,
+                      margin: margin,
+                      child: Material(
+                        color: _currentPage == index ? theme.colorScheme.primary : null,
+                        textStyle: widget.textStyle,
+                        clipBehavior: Clip.antiAlias,
+                        borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize),
+                        child: InkWell(
+                          onTap: () => _gotoPage(index, pageNumberIndicatorsPerList),
+                          child: Center(
+                            child: Text(
+                              "${index + 1}",
+                              style: TextStyle(color: _currentPage == index ? theme.colorScheme.onPrimary : null),
+                            ),
                           ),
                         ),
                       ),
                     ),
+                    growable: false,
                   ),
-                  growable: false,
                 ),
               ),
             ),
           ),
-        ),
 
-        /// Goto next page
-        Container(
-          width: _kPageNumberIndicatorSize,
-          height: _kPageNumberIndicatorSize,
-          margin: margin,
-          child: Material(
-            clipBehavior: Clip.antiAlias,
-            borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize),
-            textStyle: widget.textStyle,
-            child: InkWell(
-              onTap: _enableLastPageCtrl
-                  ? () => _gotoPage(_currentPage + 1)
-                  : null,
-              child: Center(
-                child: Icon(
-                  Icons.keyboard_arrow_right,
-                  size: _kPageControlIconSize,
-                  color: widget.textStyle?.color?.withOpacity(
-                      _enableLastPageCtrl ? 1.0 : _kDisabledControlOpacity),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ]);
-
-      /// Goto last page
-      if (_numberOfPages > _kPageNumbersPerList) {
-        children.add(
+          /// Goto next page
           Container(
             width: _kPageNumberIndicatorSize,
             height: _kPageNumberIndicatorSize,
@@ -264,50 +219,73 @@ class _PaginationState extends State<Pagination> {
               borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize),
               textStyle: widget.textStyle,
               child: InkWell(
-                onTap: _enableLastPageCtrl ? () => _gotoPage(-1) : null,
+                onTap: _enableLastPageCtrl ? () => _gotoPage(_currentPage + 1, pageNumberIndicatorsPerList) : null,
                 child: Center(
                   child: Icon(
-                    Icons.last_page,
+                    Icons.keyboard_arrow_right,
                     size: _kPageControlIconSize,
-                    color: widget.textStyle?.color?.withOpacity(
-                        _enableLastPageCtrl ? 1.0 : _kDisabledControlOpacity),
+                    color: widget.textStyle?.color?.withOpacity(_enableLastPageCtrl ? 1.0 : _kDisabledControlOpacity),
                   ),
                 ),
               ),
             ),
           ),
-        );
-      }
 
-      children.add(
-        const SizedBox(width: _kItemSpacing),
-      );
-    }
-
-    children.addAll([
-      /// Text
-      Text("$firstItemIndex - $lastItemIndex of ${widget.totalItems}",
-          style: widget.textStyle),
-      const Spacer(),
-
-      /// Dropdown
-      const SizedBox(width: _kItemSpacing),
-      const Text("Items per page"),
-      const SizedBox(width: _kItemSpacing),
-      DropdownButton<int>(
-        value: _itemsPerPage,
-        items: widget.availableItemsPerPage
-            .map(
-              (e) => DropdownMenuItem<int>(
-                value: e,
-                child: Text(e.toString()),
+          /// Goto last page
+          if (_numberOfPages > pageNumberIndicatorsPerList)
+            Container(
+              width: _kPageNumberIndicatorSize,
+              height: _kPageNumberIndicatorSize,
+              margin: margin,
+              child: Material(
+                clipBehavior: Clip.antiAlias,
+                borderRadius: BorderRadius.circular(_kPageNumberIndicatorSize),
+                textStyle: widget.textStyle,
+                child: InkWell(
+                  onTap: _enableLastPageCtrl ? () => _gotoPage(-1, pageNumberIndicatorsPerList) : null,
+                  child: Center(
+                    child: Icon(
+                      Icons.last_page,
+                      size: _kPageControlIconSize,
+                      color: widget.textStyle?.color?.withOpacity(_enableLastPageCtrl ? 1.0 : _kDisabledControlOpacity),
+                    ),
+                  ),
+                ),
               ),
-            )
-            .toList(),
-        onChanged: _setItemsPerPage,
-      ),
-    ]);
+            ),
+          if (!isCollapsed) ...[
+            const Spacer(),
+            if (itemsInfoTitle[0] != null) Text(itemsInfoTitle[0]!),
+            if (itemsInfoTitle[1] != null)
+              PopupMenuButton<int>(
+                itemBuilder: (_) => widget.availableItemsPerPage.map((e) => PopupMenuItem<int>(value: e, child: Text(e.toString()))).toList(),
+                onSelected: _setItemsPerPage,
+                tooltip: localization.paginationItemsPerPageTitle,
+                enableFeedback: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 1.0),
+                  child: Text(itemsInfoTitle[1]!),
+                ),
+              ),
+            if (itemsInfoTitle[2] != null) Text(itemsInfoTitle[2]!),
+          ],
+        ],
+      );
+    });
+  }
 
-    return Row(mainAxisSize: MainAxisSize.min, children: children);
+  List<String?> _parseItemsInfoTitle(String title, int firstItem, int lastItem, int itemCount) {
+    final result = List<String?>.filled(3, null);
+    final first = title.indexOf(r"$firstItem");
+    final last = title.indexOf(r"$lastItem");
+    const len = (r"$lastItem").length;
+    if (first == -1 || last == -1) {
+      result[0] = title;
+    } else {
+      result[0] = title.substring(0, first);
+      result[1] = title.substring(first, last + len).replaceAll(r"$firstItem", firstItem.toString()).replaceAll(r"$lastItem", lastItem.toString());
+      result[2] = title.substring(last + len).replaceAll(r"$itemCount", itemCount.toString());
+    }
+    return result;
   }
 }

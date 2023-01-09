@@ -13,37 +13,29 @@ enum DataGridSortState {
     if (resetState) {
       return DataGridSortState.ascending;
     } else {
-      return this == DataGridSortState.ascending
-          ? DataGridSortState.descending
-          : DataGridSortState.ascending;
+      return this == DataGridSortState.ascending ? DataGridSortState.descending : DataGridSortState.ascending;
     }
   }
 }
 
 enum FilterOperator {
-  and("And"),
-  or("Or");
-
-  const FilterOperator(this.description);
-  final String description;
+  and,
+  or;
 }
 
 enum FilterConditionType {
-  contains("Contains"),
-  doesNotContain("Does Not Contain"),
-  equals("Equals"),
-  doesNotEqual("Does Not Equal"),
-  beginsWith("Begins With"),
-  doesNotBeginWith("Does Not Begin With"),
-  endsWith("Ends With"),
-  doesNotEndWith("Does Not End With"),
-  greaterThan("Greater Than"),
-  greaterThanOrEqual("Greater Than or Equal"),
-  lessThan("Less Than"),
-  lessThanOrEqual("Less Than or Equal");
-
-  const FilterConditionType(this.description);
-  final String description;
+  contains,
+  doesNotContain,
+  equals,
+  doesNotEqual,
+  beginsWith,
+  doesNotBeginWith,
+  endsWith,
+  doesNotEndWith,
+  greaterThan,
+  greaterThanOrEqual,
+  lessThan,
+  lessThanOrEqual;
 
   static Iterable<FilterConditionType?> valuesPerDataType(FilterDataType type) {
     switch (type) {
@@ -88,9 +80,7 @@ class FilterCondition {
 
   @override
   bool operator ==(Object other) {
-    return other is FilterCondition &&
-        type == other.type &&
-        value == other.value;
+    return other is FilterCondition && type == other.type && value == other.value;
   }
 
   @override
@@ -110,17 +100,11 @@ class Filter {
   FilterOperator operator;
   FilterDataType dataType;
 
-  bool get isNotEmpty =>
-      conditions != null &&
-      conditions!.any((cond) => cond.value != null && cond.value!.isNotEmpty);
+  bool get isNotEmpty => conditions != null && conditions!.any((cond) => cond.value != null && cond.value!.isNotEmpty);
 
   @override
   bool operator ==(Object other) {
-    return other is Filter &&
-        column == other.column &&
-        operator == other.operator &&
-        listEquals(conditions, other.conditions) &&
-        dataType == other.dataType;
+    return other is Filter && column == other.column && operator == other.operator && listEquals(conditions, other.conditions) && dataType == other.dataType;
   }
 
   @override
@@ -135,7 +119,6 @@ abstract class DataGridSource extends ChangeNotifier {
   int get sortColumnIndex;
   DataGridSortState get sortState;
   Future<void> fetch({required int startIndex, required int count});
-  Future<void> sort(
-      {required int columnIndex, required DataGridSortState state});
+  Future<void> sort({required int columnIndex, required DataGridSortState state});
   Future<void> applyFilters(List<Filter?> filters);
 }

@@ -14,7 +14,9 @@ dependencies:
   http: ^0.13.5
   vph_data_grid:
     path: ../
-
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
@@ -24,3 +26,4 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true

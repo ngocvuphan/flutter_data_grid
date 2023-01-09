@@ -1,6 +1,6 @@
 name: vph_data_grid
 description: Flutter DataGrid is used to display and manipulate data in table view with advanced features.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/ngocvuphan/flutter_data_grid
 
 environment:
@@ -9,6 +9,8 @@ environment:
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
   linked_scroll_controller: ^0.2.0
 
