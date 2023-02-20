@@ -20,6 +20,7 @@ import 'widgets/sort_icon.dart';
 const Duration kSortIconAnimationDuration = Duration(milliseconds: 150);
 
 class DataGrid extends StatefulWidget {
+  /// The DataGrid is used to display and manipulate data in table view with advanced features.
   const DataGrid({
     super.key,
     required this.source,
@@ -29,10 +30,19 @@ class DataGrid extends StatefulWidget {
     this.empty,
   });
 
+  /// The data source which provides columns and rows of the [DataGrid].
   final DataGridSource source;
+
+  /// The style to use when painting the boundary and interior divisions of the [DataGrid].
   final DataGridBorder? border;
+
+  /// The style of painting border
   final DataGridBorderStyle borderStyle;
+
+  /// The columns can be frozen in left of grid
   final int freezeColumns;
+
+  /// The widget to show when the data source is empty
   final Widget? empty;
 
   @override
@@ -106,7 +116,8 @@ class _DataGridState extends State<DataGrid> {
   void _handleDataSourceChanged() => setState(() {});
 
   Future<void> _handlePageChanged(int pageIndex, int itemsPerPage) async {
-    widget.source.fetch(startIndex: pageIndex * itemsPerPage, count: itemsPerPage);
+    widget.source
+        .fetch(startIndex: pageIndex * itemsPerPage, count: itemsPerPage);
     setState(() {
       _rowsPerPage = itemsPerPage;
     });
@@ -142,14 +153,21 @@ class _DataGridState extends State<DataGrid> {
       final index = _columns.indexOf(column);
       final alignment = column.alignment;
       final padding = column.padding ?? defaultPadding;
-      final sortState = (column.sortable || column.filterable) && _sortColumnIndex == index ? _sortState : DataGridSortState.none;
-      final isNotEmptyFilter = _filters[index] != null && _filters[index]!.isNotEmpty;
-      Widget label = column.label ?? Text(column.displayName ?? column.name, overflow: TextOverflow.ellipsis);
+      final sortState =
+          (column.sortable || column.filterable) && _sortColumnIndex == index
+              ? _sortState
+              : DataGridSortState.none;
+      final isNotEmptyFilter =
+          _filters[index] != null && _filters[index]!.isNotEmpty;
+      Widget label = column.label ??
+          Text(column.displayName ?? column.name,
+              overflow: TextOverflow.ellipsis);
 
       label = Row(
         children: [
           label,
-          if (sortState != DataGridSortState.none || isNotEmptyFilter) const Spacer(),
+          if (sortState != DataGridSortState.none || isNotEmptyFilter)
+            const Spacer(),
           if (sortState != DataGridSortState.none) SortIcon(state: sortState),
           if (isNotEmptyFilter) const Icon(Icons.filter_alt_outlined, size: 20),
         ],
@@ -191,19 +209,26 @@ class _DataGridState extends State<DataGrid> {
       children.add(
         GridChild(
           region: GridRegion.freezeHeader,
-          border: DataGridBorder(right: border?.verticalInside ?? BorderSide.none),
+          border:
+              DataGridBorder(right: border?.verticalInside ?? BorderSide.none),
           child: Padding(
-            padding: EdgeInsets.only(right: (border?.verticalInside.width ?? 0.0), bottom: (border?.horizontalInside.width ?? 0.0) / 2),
+            padding: EdgeInsets.only(
+                right: (border?.verticalInside.width ?? 0.0),
+                bottom: (border?.horizontalInside.width ?? 0.0) / 2),
             child: GridRow(
               type: GridRowType.header,
               stateManager: stateManager,
               border: border,
-              columnEdgeIndicatorIndent: dataGridTheme.columnEdgeIndicatorIndent!,
+              columnEdgeIndicatorIndent:
+                  dataGridTheme.columnEdgeIndicatorIndent!,
               columnEdgeIndicatorWidth: dataGridTheme.columnEdgeIndicatorWidth!,
               columnEdgeIndicatorColor: dataGridTheme.columnEdgeIndicatorColor!,
               resizeIndicatorWidth: dataGridTheme.resizeIndicatorWidth!,
               resizeIndicatorColor: dataGridTheme.resizeIndicatorColor!,
-              children: _columns.take(widget.freezeColumns).map(buildHeadingCell).toList(),
+              children: _columns
+                  .take(widget.freezeColumns)
+                  .map(buildHeadingCell)
+                  .toList(),
             ),
           ),
         ),
@@ -219,18 +244,25 @@ class _DataGridState extends State<DataGrid> {
             scrollDirection: Axis.horizontal,
             controller: _controllers.horizontalHeaderController,
             child: Padding(
-              padding: EdgeInsets.only(bottom: (border?.horizontalInside.width ?? 0.0) / 2),
+              padding: EdgeInsets.only(
+                  bottom: (border?.horizontalInside.width ?? 0.0) / 2),
               child: GridRow(
                 type: GridRowType.header,
                 stateManager: stateManager,
                 skipColumns: widget.freezeColumns,
                 border: border,
-                columnEdgeIndicatorIndent: dataGridTheme.columnEdgeIndicatorIndent!,
-                columnEdgeIndicatorWidth: dataGridTheme.columnEdgeIndicatorWidth!,
-                columnEdgeIndicatorColor: dataGridTheme.columnEdgeIndicatorColor!,
+                columnEdgeIndicatorIndent:
+                    dataGridTheme.columnEdgeIndicatorIndent!,
+                columnEdgeIndicatorWidth:
+                    dataGridTheme.columnEdgeIndicatorWidth!,
+                columnEdgeIndicatorColor:
+                    dataGridTheme.columnEdgeIndicatorColor!,
                 resizeIndicatorWidth: dataGridTheme.resizeIndicatorWidth!,
                 resizeIndicatorColor: dataGridTheme.resizeIndicatorColor!,
-                children: _columns.skip(widget.freezeColumns).map(buildHeadingCell).toList(),
+                children: _columns
+                    .skip(widget.freezeColumns)
+                    .map(buildHeadingCell)
+                    .toList(),
               ),
             ),
           ),
@@ -260,7 +292,8 @@ class _DataGridState extends State<DataGrid> {
         height: dataGridTheme.dataRowHeight!,
         alignment: alignment,
         padding: padding,
-        child: DefaultTextStyle(style: dataGridTheme.dataTextStyle!, child: cell),
+        child:
+            DefaultTextStyle(style: dataGridTheme.dataTextStyle!, child: cell),
       );
       return label;
     }
@@ -271,7 +304,8 @@ class _DataGridState extends State<DataGrid> {
       children.add(
         GridChild(
           region: GridRegion.body,
-          border: DataGridBorder(bottom: border?.horizontalInside ?? BorderSide.none),
+          border: DataGridBorder(
+              bottom: border?.horizontalInside ?? BorderSide.none),
           child: const Center(child: CircularProgressIndicator()),
         ),
       );
@@ -279,7 +313,8 @@ class _DataGridState extends State<DataGrid> {
       children.add(
         GridChild(
           region: GridRegion.body,
-          border: DataGridBorder(bottom: border?.horizontalInside ?? BorderSide.none),
+          border: DataGridBorder(
+              bottom: border?.horizontalInside ?? BorderSide.none),
           child: widget.empty ?? Center(child: Text(localization.noDataLabel)),
         ),
       );
@@ -290,13 +325,16 @@ class _DataGridState extends State<DataGrid> {
           final isLastRow = rowIdx == rows.length - 1;
           return GridRow(
             stateManager: stateManager,
-            border: isLastRow ? border?.copyWith(horizontalInside: BorderSide.none) : border,
+            border: isLastRow
+                ? border?.copyWith(horizontalInside: BorderSide.none)
+                : border,
             columnEdgeIndicatorIndent: dataGridTheme.columnEdgeIndicatorIndent!,
             columnEdgeIndicatorWidth: dataGridTheme.columnEdgeIndicatorWidth!,
             columnEdgeIndicatorColor: dataGridTheme.columnEdgeIndicatorColor!,
             resizeIndicatorWidth: dataGridTheme.resizeIndicatorWidth!,
             resizeIndicatorColor: dataGridTheme.resizeIndicatorColor!,
-            children: List.generate(widget.freezeColumns, (index) => buildDataCell(row: row, index: index)),
+            children: List.generate(widget.freezeColumns,
+                (index) => buildDataCell(row: row, index: index)),
           );
         });
         children.add(
@@ -307,13 +345,16 @@ class _DataGridState extends State<DataGrid> {
               bottom: border?.horizontalInside ?? BorderSide.none,
             ),
             child: ScrollConfiguration(
-              behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+              behavior:
+                  ScrollConfiguration.of(context).copyWith(scrollbars: false),
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 controller: _controllers.verticalLeftController,
                 child: Padding(
-                  padding: EdgeInsets.only(right: (border?.verticalInside.width ?? 0.0)),
-                  child: GridRowsContainer(stateManager: stateManager, children: leftRows),
+                  padding: EdgeInsets.only(
+                      right: (border?.verticalInside.width ?? 0.0)),
+                  child: GridRowsContainer(
+                      stateManager: stateManager, children: leftRows),
                 ),
               ),
             ),
@@ -327,20 +368,26 @@ class _DataGridState extends State<DataGrid> {
         return GridRow(
           stateManager: stateManager,
           skipColumns: widget.freezeColumns,
-          border: isLastRow ? border?.copyWith(horizontalInside: BorderSide.none) : border,
+          border: isLastRow
+              ? border?.copyWith(horizontalInside: BorderSide.none)
+              : border,
           columnEdgeIndicatorIndent: dataGridTheme.columnEdgeIndicatorIndent!,
           columnEdgeIndicatorWidth: dataGridTheme.columnEdgeIndicatorWidth!,
           columnEdgeIndicatorColor: dataGridTheme.columnEdgeIndicatorColor!,
           resizeIndicatorWidth: dataGridTheme.resizeIndicatorWidth!,
           resizeIndicatorColor: dataGridTheme.resizeIndicatorColor!,
-          children: List.generate(row.children.length - widget.freezeColumns, (index) => buildDataCell(row: row, index: index + widget.freezeColumns)),
+          children: List.generate(
+              row.children.length - widget.freezeColumns,
+              (index) =>
+                  buildDataCell(row: row, index: index + widget.freezeColumns)),
         );
       });
 
       children.add(
         GridChild(
           region: GridRegion.body,
-          border: DataGridBorder(bottom: border?.horizontalInside ?? BorderSide.none),
+          border: DataGridBorder(
+              bottom: border?.horizontalInside ?? BorderSide.none),
           child: Scrollbar(
             controller: _controllers.horizontalRowsController,
             notificationPredicate: (notification) => notification.depth == 0,
@@ -353,7 +400,8 @@ class _DataGridState extends State<DataGrid> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
                   controller: _controllers.verticalRightController,
-                  child: GridRowsContainer(stateManager: stateManager, children: rightRows),
+                  child: GridRowsContainer(
+                      stateManager: stateManager, children: rightRows),
                 ),
               ),
             ),
@@ -380,7 +428,8 @@ class _DataGridState extends State<DataGrid> {
             children: [
               Container(
                 height: dataGridTheme.headingRowHeight!,
-                padding: EdgeInsets.symmetric(horizontal: dataGridTheme.horizontalMargin!),
+                padding: EdgeInsets.symmetric(
+                    horizontal: dataGridTheme.horizontalPadding!),
                 alignment: Alignment.centerLeft,
                 child: Pagination(
                   textStyle: dataGridTheme.dataTextStyle!,
@@ -398,12 +447,17 @@ class _DataGridState extends State<DataGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
       final dataGridTheme = DataGridThemeHelper.of(context);
       final localization = DataGridLocalizations.of(context);
-      final borderSide = Divider.createBorderSide(context, color: dataGridTheme.borderColor, width: dataGridTheme.borderWidth!);
-      final border = widget.border ?? DataGridBorder.withStyle(style: widget.borderStyle, borderSide: borderSide);
-      final defaultPadding = EdgeInsets.symmetric(horizontal: dataGridTheme.horizontalMargin!);
+      final borderSide = Divider.createBorderSide(context,
+          color: dataGridTheme.borderColor, width: dataGridTheme.borderWidth!);
+      final border = widget.border ??
+          DataGridBorder.withStyle(
+              style: widget.borderStyle, borderSide: borderSide);
+      final defaultPadding =
+          EdgeInsets.symmetric(horizontal: dataGridTheme.horizontalPadding!);
       final children = <GridChild>[];
 
       _stateManager.setConfiguration(

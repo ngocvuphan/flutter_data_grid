@@ -13,7 +13,9 @@ enum DataGridSortState {
     if (resetState) {
       return DataGridSortState.ascending;
     } else {
-      return this == DataGridSortState.ascending ? DataGridSortState.descending : DataGridSortState.ascending;
+      return this == DataGridSortState.ascending
+          ? DataGridSortState.descending
+          : DataGridSortState.ascending;
     }
   }
 }
@@ -80,7 +82,9 @@ class FilterCondition {
 
   @override
   bool operator ==(Object other) {
-    return other is FilterCondition && type == other.type && value == other.value;
+    return other is FilterCondition &&
+        type == other.type &&
+        value == other.value;
   }
 
   @override
@@ -100,11 +104,17 @@ class Filter {
   FilterOperator operator;
   FilterDataType dataType;
 
-  bool get isNotEmpty => conditions != null && conditions!.any((cond) => cond.value != null && cond.value!.isNotEmpty);
+  bool get isNotEmpty =>
+      conditions != null &&
+      conditions!.any((cond) => cond.value != null && cond.value!.isNotEmpty);
 
   @override
   bool operator ==(Object other) {
-    return other is Filter && column == other.column && operator == other.operator && listEquals(conditions, other.conditions) && dataType == other.dataType;
+    return other is Filter &&
+        column == other.column &&
+        operator == other.operator &&
+        listEquals(conditions, other.conditions) &&
+        dataType == other.dataType;
   }
 
   @override
@@ -120,6 +130,7 @@ abstract class DataGridSource extends ChangeNotifier {
   int get totalRowCount;
 
   Future<void> fetch({required int startIndex, required int count});
-  Future<void> sort({required int columnIndex, required DataGridSortState state});
+  Future<void> sort(
+      {required int columnIndex, required DataGridSortState state});
   Future<void> applyFilters(List<Filter?> filters);
 }

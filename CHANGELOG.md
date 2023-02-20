@@ -1,3 +1,7 @@
+# [0.0.3] (2/20/2023)
+
+Improve performance
+
 # [0.0.2] (1/9/2023)
 
 ### Features

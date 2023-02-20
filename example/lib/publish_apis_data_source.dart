@@ -67,7 +67,8 @@ class PublishAPIsDataSource extends DataGridSource {
   int _totalRowCount = 0;
 
   @override
-  List<DataGridRow>? get rows => _rows != null ? List.unmodifiable(_rows!) : null;
+  List<DataGridRow>? get rows =>
+      _rows != null ? List.unmodifiable(_rows!) : null;
 
   @override
   Future<void> fetch({required int startIndex, required int count}) async {
@@ -75,20 +76,14 @@ class PublishAPIsDataSource extends DataGridSource {
     notifyListeners();
 
     if (_sampleData.isEmpty) {
-      final response = await http.get(Uri.parse("https://api.publicapis.org/entries"));
+      final response =
+          await http.get(Uri.parse("https://api.publicapis.org/entries"));
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
 
         for (final result in json['entries']) {
-          _sampleData.add(<String>[
-            result['API'].toString(),
-            result['Description'].toString(),
-            result['Auth'].toString(),
-            result['HTTPS'].toString(),
-            result['Cors'].toString(),
-            result['Category'].toString(),
-            result['Link'].toString(),
-          ]);
+          _sampleData
+              .add(columns.map((e) => result[e.name].toString()).toList());
         }
       }
     }
@@ -102,12 +97,14 @@ class PublishAPIsDataSource extends DataGridSource {
   }
 
   @override
-  Future<void> sort({required int columnIndex, required DataGridSortState state}) async {
+  Future<void> sort(
+      {required int columnIndex, required DataGridSortState state}) async {
     _isLoading = true;
     notifyListeners();
 
     _sortFunction = (a, b) {
-      final compare = a[columnIndex].toLowerCase().compareTo(b[columnIndex].toLowerCase());
+      final compare =
+          a[columnIndex].toLowerCase().compareTo(b[columnIndex].toLowerCase());
       return (state == DataGridSortState.ascending) ? compare : -compare;
     };
 
@@ -172,7 +169,8 @@ class PublishAPIsDataSource extends DataGridSource {
       for (final filter in _filters!) {
         if (filter != null && filter.isNotEmpty) {
           data = data.where((d) {
-            final results = _compareString(d[filter.column].toLowerCase(), filter.conditions!);
+            final results = _compareString(
+                d[filter.column].toLowerCase(), filter.conditions!);
             if (filter.operator == FilterOperator.or) {
               return results.any((e) => e);
             } else {
@@ -199,7 +197,9 @@ class PublishAPIsDataSource extends DataGridSource {
                 Text(e[3], overflow: TextOverflow.ellipsis),
                 Text(e[4], overflow: TextOverflow.ellipsis),
                 Text(e[5], overflow: TextOverflow.ellipsis),
-                TextButton(onPressed: () {}, child: Text(e[6], overflow: TextOverflow.ellipsis)),
+                TextButton(
+                    onPressed: () {},
+                    child: Text(e[6], overflow: TextOverflow.ellipsis)),
               ],
             ))
         .toList();

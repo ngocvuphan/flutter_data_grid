@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DataGridTheme extends InheritedWidget {
+  /// Define the [DataGrid] theme
   const DataGridTheme({
     super.key,
     required this.data,
@@ -23,6 +24,7 @@ class DataGridTheme extends InheritedWidget {
 
 @immutable
 class DataGridThemeData with Diagnosticable {
+  /// Define the [DataGrid] theme data
   const DataGridThemeData({
     this.headingRowHeight,
     this.headingTextStyle,
@@ -30,7 +32,7 @@ class DataGridThemeData with Diagnosticable {
     this.dataTextStyle,
     this.borderWidth,
     this.borderColor,
-    this.horizontalMargin,
+    this.horizontalPadding,
     this.resizeIndicatorColor,
     this.resizeIndicatorWidth,
     this.columnEdgeIndicatorColor,
@@ -39,18 +41,43 @@ class DataGridThemeData with Diagnosticable {
     this.minColumnWidth,
   });
 
+  /// Define the heading row height. Default is 56.0
   final double? headingRowHeight;
+
+  /// Define the heading text style. Default is titleSmall
   final TextStyle? headingTextStyle;
+
+  /// Define the data row height. Default is 48.0
   final double? dataRowHeight;
+
+  /// Define the data row text style. Default is bodyMedium
   final TextStyle? dataTextStyle;
+
+  /// Define the border width. Default is 1.0
   final double? borderWidth;
+
+  /// Define the border color. Default is onSurface.withOpacity(0.12)
   final Color? borderColor;
-  final double? horizontalMargin;
+
+  /// Define the horizontal padding of header and rows. Default is 24.0
+  final double? horizontalPadding;
+
+  /// Define the color of resize indicator. Default is primary
   final Color? resizeIndicatorColor;
+
+  /// Define the width of resize indicator. Default is 2.0
   final double? resizeIndicatorWidth;
+
+  /// Define the color of column edge indicator in the case non vertical border. Default is onSurface.withOpacity(0.12)
   final Color? columnEdgeIndicatorColor;
+
+  /// Define the indent of column edge indicator in the case non vertical border. Default is 16.0
   final double? columnEdgeIndicatorIndent;
+
+  /// Define the width of column edge indicator in the case non vertical border. Default is 1.0
   final double? columnEdgeIndicatorWidth;
+
+  /// Define the minimum width of column
   final double? minColumnWidth;
 
   @override
@@ -61,7 +88,7 @@ class DataGridThemeData with Diagnosticable {
         dataTextStyle,
         borderWidth,
         borderColor,
-        horizontalMargin,
+        horizontalPadding,
         resizeIndicatorColor,
         resizeIndicatorWidth,
         columnEdgeIndicatorColor,
@@ -85,7 +112,7 @@ class DataGridThemeData with Diagnosticable {
         other.dataTextStyle == dataTextStyle &&
         other.borderWidth == borderWidth &&
         other.borderColor == borderColor &&
-        other.horizontalMargin == horizontalMargin &&
+        other.horizontalPadding == horizontalPadding &&
         other.resizeIndicatorColor == resizeIndicatorColor &&
         other.resizeIndicatorWidth == resizeIndicatorWidth &&
         other.columnEdgeIndicatorColor == columnEdgeIndicatorColor &&

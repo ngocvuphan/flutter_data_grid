@@ -68,11 +68,15 @@ class _MyAppState extends State<MyApp> {
                   return const [
                     PopupMenuItem(
                       value: Locale("en"),
-                      child: ListTile(leading: Text("🇺🇸", style: TextStyle(fontSize: 28)), title: Text("English")),
+                      child: ListTile(
+                          leading: Text("🇺🇸", style: TextStyle(fontSize: 28)),
+                          title: Text("English")),
                     ),
                     PopupMenuItem(
                       value: Locale("vi"),
-                      child: ListTile(leading: Text("🇻🇳", style: TextStyle(fontSize: 28)), title: Text("Tiếng Việt")),
+                      child: ListTile(
+                          leading: Text("🇻🇳", style: TextStyle(fontSize: 28)),
+                          title: Text("Tiếng Việt")),
                     ),
                   ];
                 },
@@ -89,7 +93,7 @@ class _MyAppState extends State<MyApp> {
                   Expanded(
                     child: DataGrid(
                       borderStyle: DataGridBorderStyle.all,
-                      freezeColumns: 1,
+                      //freezeColumns: 1,
                       source: _dataSource,
                     ),
                   ),
