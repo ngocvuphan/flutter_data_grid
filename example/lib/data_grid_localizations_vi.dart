@@ -48,5 +48,11 @@ class DataGridLocalizationsVi extends DataGridLocalizations {
   String get paginationItemsInfoTitle => r"Hiển thị $firstItem - $lastItem trong tổng số $itemCount";
 
   @override
+  String get paginationShortItemsInfoTitle => r"$firstItem - $lastItem / $itemCount";
+
+  @override
   String get paginationItemsPerPageTitle => "Mục trên mỗi trang";
+
+  @override
+  String get noDataLabel => "Không có dữ liệu";
 }

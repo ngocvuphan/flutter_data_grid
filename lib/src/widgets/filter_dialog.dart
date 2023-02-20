@@ -7,8 +7,7 @@ const _kTitleHeight = 48.0;
 const _kItemSpacing = 8.0;
 const _kHorizontalPadding = 16.0;
 const _kVerticalPadding = 16.0;
-const _kItemPadding = EdgeInsets.symmetric(
-    vertical: _kItemSpacing / 2, horizontal: _kHorizontalPadding);
+const _kItemPadding = EdgeInsets.symmetric(vertical: _kItemSpacing / 2, horizontal: _kHorizontalPadding);
 const _kFixedButtonSize = Size(140, 48);
 
 class FilterDialog extends StatefulWidget {
@@ -50,34 +49,25 @@ class _FilterDialogState extends State<FilterDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final localezation = DataGridLocalizations.of(context);
-    final filterConditionTypeItems =
-        FilterConditionType.valuesPerDataType(widget.filter.dataType).map((e) {
+    final localization = DataGridLocalizations.of(context);
+    final filterConditionTypeItems = FilterConditionType.valuesPerDataType(widget.filter.dataType).map((e) {
       if (e != null) {
-        return DropdownMenuItem<FilterConditionType>(
-            value: e,
-            child:
-                Text(localezation.filterConditionTypeDescription(e) ?? e.name));
+        return DropdownMenuItem<FilterConditionType>(value: e, child: Text(localization.filterConditionTypeDescription(e) ?? e.name));
       } else {
         return DropdownMenuItemSeparator<FilterConditionType>();
       }
     }).toList();
-    final inputBorder =
-        OutlineInputBorder(borderSide: Divider.createBorderSide(context));
-    final inputDecoration =
-        InputDecoration(enabledBorder: inputBorder, border: inputBorder);
+    final inputBorder = OutlineInputBorder(borderSide: Divider.createBorderSide(context));
+    final inputDecoration = InputDecoration(enabledBorder: inputBorder, border: inputBorder);
 
     final children = <Widget>[
       if (widget.title != null) ...[
         Container(
           height: _kTitleHeight,
           alignment: Alignment.center,
-          child: Text(widget.title!,
-              style: const TextStyle(fontWeight: FontWeight.bold)),
+          child: Text(widget.title!, style: const TextStyle(fontWeight: FontWeight.bold)),
         ),
-        const Padding(
-            padding: EdgeInsets.only(bottom: _kItemSpacing / 2),
-            child: Divider(thickness: 1.0, height: 1.0)),
+        const Padding(padding: EdgeInsets.only(bottom: _kItemSpacing / 2), child: Divider(thickness: 1.0, height: 1.0)),
       ],
       Padding(
         padding: widget.title != null
@@ -88,8 +78,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 right: _kHorizontalPadding,
                 bottom: _kItemSpacing / 2,
               ),
-        child: Text(localezation.filterDialogSortTitle,
-            style: const TextStyle(fontWeight: FontWeight.bold)),
+        child: Text(localization.filterDialogSortTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       Padding(
         padding: _kItemPadding,
@@ -98,37 +87,23 @@ class _FilterDialogState extends State<FilterDialog> {
           children: [
             OutlinedButton.icon(
               onPressed: () => widget.onSort?.call(DataGridSortState.ascending),
-              style: OutlinedButton.styleFrom(
-                  fixedSize: _kFixedButtonSize,
-                  foregroundColor:
-                      theme.textTheme.button?.color ?? Colors.black),
+              style: OutlinedButton.styleFrom(fixedSize: _kFixedButtonSize, foregroundColor: theme.textTheme.labelLarge?.color ?? Colors.black),
               icon: const Icon(Icons.south, size: 20),
-              label: Text(localezation.dataGridSortStateDescription(
-                      DataGridSortState.ascending) ??
-                  "Ascending"),
+              label: Text(localization.dataGridSortStateDescription(DataGridSortState.ascending) ?? "Ascending"),
             ),
             OutlinedButton.icon(
-              onPressed: () =>
-                  widget.onSort?.call(DataGridSortState.descending),
-              style: OutlinedButton.styleFrom(
-                  fixedSize: _kFixedButtonSize,
-                  foregroundColor:
-                      theme.textTheme.button?.color ?? Colors.black),
+              onPressed: () => widget.onSort?.call(DataGridSortState.descending),
+              style: OutlinedButton.styleFrom(fixedSize: _kFixedButtonSize, foregroundColor: theme.textTheme.labelLarge?.color ?? Colors.black),
               icon: const Icon(Icons.north, size: 20),
-              label: Text(localezation.dataGridSortStateDescription(
-                      DataGridSortState.descending) ??
-                  "Descending"),
+              label: Text(localization.dataGridSortStateDescription(DataGridSortState.descending) ?? "Descending"),
             ),
           ],
         ),
       ),
-      const Padding(
-          padding: EdgeInsets.symmetric(vertical: _kItemSpacing / 2),
-          child: Divider(thickness: 1.0, height: 1.0)),
+      const Padding(padding: EdgeInsets.symmetric(vertical: _kItemSpacing / 2), child: Divider(thickness: 1.0, height: 1.0)),
       Padding(
         padding: _kItemPadding,
-        child: Text(localezation.filterDialogFilterTitle,
-            style: const TextStyle(fontWeight: FontWeight.bold)),
+        child: Text(localization.filterDialogFilterTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       Padding(
         padding: _kItemPadding,
@@ -185,24 +160,20 @@ class _FilterDialogState extends State<FilterDialog> {
         ),
       ),
       Padding(
-        padding: const EdgeInsets.only(
-            left: _kHorizontalPadding,
-            top: _kItemSpacing,
-            right: _kHorizontalPadding,
-            bottom: _kVerticalPadding),
+        padding: const EdgeInsets.only(left: _kHorizontalPadding, top: _kItemSpacing, right: _kHorizontalPadding, bottom: _kVerticalPadding),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             ElevatedButton(
               onPressed: () => _handleApplyPressed(Navigator.of(context).pop),
               style: ElevatedButton.styleFrom(fixedSize: _kFixedButtonSize),
-              child: Text(localezation.filterDialogApplyFilterLabel),
+              child: Text(localization.filterDialogApplyFilterLabel),
             ),
             const SizedBox(width: _kItemSpacing),
             OutlinedButton(
               onPressed: () => _handleClearPressed(Navigator.of(context).pop),
               style: OutlinedButton.styleFrom(fixedSize: _kFixedButtonSize),
-              child: Text(localezation.filterDialogClearFilterLabel),
+              child: Text(localization.filterDialogClearFilterLabel),
             ),
           ],
         ),
@@ -234,9 +205,7 @@ class _FilterDialogState extends State<FilterDialog> {
     widget.onApplyFilter?.call(
       Filter(
         column: widget.filter.column,
-        conditions: _conditions
-            .where((cond) => cond.value != null && cond.value!.isNotEmpty)
-            .toList(),
+        conditions: _conditions.where((cond) => cond.value != null && cond.value!.isNotEmpty).toList(),
         operator: _operator,
       ),
     );
@@ -261,8 +230,7 @@ class _FilterDialogState extends State<FilterDialog> {
 }
 
 class DropdownMenuItemSeparator<T> extends DropdownMenuItem<T> {
-  DropdownMenuItemSeparator({super.key})
-      : super(enabled: false, child: Container());
+  DropdownMenuItemSeparator({super.key}) : super(enabled: false, child: Container());
   @override
   Widget build(BuildContext context) {
     return const Divider(thickness: 1.0, height: 1.0);

@@ -40,13 +40,13 @@ class FixedDataGridColumnWidth extends DataGridColumnWidth {
 }
 
 class FlexDataGridColumnWidth extends DataGridColumnWidth {
-  const FlexDataGridColumnWidth([double flex = 1.0]) : super(flex);
+  const FlexDataGridColumnWidth({double flex = 1.0, this.minWidth = 0.0, this.maxWidth = double.infinity}) : super(flex);
+  final double minWidth;
+  final double maxWidth;
 }
 
 class IntrinsicDataGridColumnWidth extends DataGridColumnWidth {
-  const IntrinsicDataGridColumnWidth(
-      {this.minWidth = 0.0, this.maxWidth = double.infinity})
-      : super(minWidth);
+  const IntrinsicDataGridColumnWidth({this.minWidth = 0.0, this.maxWidth = double.infinity}) : super(minWidth);
   final double minWidth;
   final double maxWidth;
 }

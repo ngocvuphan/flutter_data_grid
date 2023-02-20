@@ -8,26 +8,17 @@ abstract class DataGridLocalizations {
 
   final Locale locale;
 
-  static DataGridLocalizations of(BuildContext context) =>
-      Localizations.of<DataGridLocalizations>(context, DataGridLocalizations) ??
-      _supportedLocalizations.values.first;
+  static DataGridLocalizations of(BuildContext context) => Localizations.of<DataGridLocalizations>(context, DataGridLocalizations) ?? _supportedLocalizations.values.first;
 
-  static const LocalizationsDelegate<DataGridLocalizations> delegate =
-      _DataGridLocalizationsDelegate();
+  static const LocalizationsDelegate<DataGridLocalizations> delegate = _DataGridLocalizationsDelegate();
 
-  static final Map<String, DataGridLocalizations> _supportedLocalizations = {
-    "en": const DataGridLocalizationsDefaultEn()
-  };
+  static final Map<String, DataGridLocalizations> _supportedLocalizations = {"en": const DataGridLocalizationsDefaultEn()};
 
-  static void registerLocalization(DataGridLocalizations localization) =>
-      _supportedLocalizations[localization.locale.toString()] = localization;
+  static void registerLocalization(DataGridLocalizations localization) => _supportedLocalizations[localization.locale.toString()] = localization;
 
-  static bool isSupported(Locale locale) =>
-      _supportedLocalizations.keys.contains(locale.toString());
+  static bool isSupported(Locale locale) => _supportedLocalizations.keys.contains(locale.toString());
 
-  static DataGridLocalizations load(Locale locale) =>
-      _supportedLocalizations[locale.toString()] ??
-      _supportedLocalizations.values.first;
+  static DataGridLocalizations load(Locale locale) => _supportedLocalizations[locale.toString()] ?? _supportedLocalizations.values.first;
 
   String? filterConditionTypeDescription(FilterConditionType type);
   String? dataGridSortStateDescription(DataGridSortState state);
@@ -36,7 +27,9 @@ abstract class DataGridLocalizations {
   String get filterDialogApplyFilterLabel;
   String get filterDialogClearFilterLabel;
   String get paginationItemsInfoTitle;
+  String get paginationShortItemsInfoTitle;
   String get paginationItemsPerPageTitle;
+  String get noDataLabel;
 }
 
 class DataGridLocalizationsDefaultEn extends DataGridLocalizations {
@@ -83,15 +76,19 @@ class DataGridLocalizationsDefaultEn extends DataGridLocalizations {
   String get filterDialogClearFilterLabel => "Clear Filter";
 
   @override
-  String get paginationItemsInfoTitle =>
-      r"Showing $firstItem - $lastItem of $itemCount";
+  String get paginationItemsInfoTitle => r"Showing $firstItem - $lastItem of $itemCount";
+
+  @override
+  String get paginationShortItemsInfoTitle => r"$firstItem - $lastItem / $itemCount";
 
   @override
   String get paginationItemsPerPageTitle => "Items per page";
+
+  @override
+  String get noDataLabel => "NO DATA";
 }
 
-class _DataGridLocalizationsDelegate
-    extends LocalizationsDelegate<DataGridLocalizations> {
+class _DataGridLocalizationsDelegate extends LocalizationsDelegate<DataGridLocalizations> {
   const _DataGridLocalizationsDelegate();
 
   @override
@@ -99,12 +96,9 @@ class _DataGridLocalizationsDelegate
 
   @override
   Future<DataGridLocalizations> load(Locale locale) {
-    return SynchronousFuture<DataGridLocalizations>(
-        DataGridLocalizations.load(locale));
+    return SynchronousFuture<DataGridLocalizations>(DataGridLocalizations.load(locale));
   }
 
   @override
-  bool shouldReload(
-          covariant LocalizationsDelegate<DataGridLocalizations> old) =>
-      false;
+  bool shouldReload(covariant LocalizationsDelegate<DataGridLocalizations> old) => false;
 }
